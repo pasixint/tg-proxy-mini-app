@@ -7,7 +7,7 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;800&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;800;900&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
@@ -16,6 +16,7 @@
             --text-color: #ffffff;
             --card-bg: rgba(255, 255, 255, 0.03);
             --card-border: rgba(250, 5, 74, 0.15);
+            --input-bg: rgba(255, 255, 255, 0.05);
         }
 
         * {
@@ -38,51 +39,62 @@
             position: relative;
         }
 
-        /* ТЕ САМЫЕ СВЕТЯЩИЕСЯ РАЗМЫТЫЕ ФИГУРЫ НА ФОНЕ */
+        /* Размытый неоновый фон */
         body::before, body::after {
             content: "";
             position: absolute;
-            width: 300px;
-            height: 300px;
+            width: 320px;
+            height: 320px;
             border-radius: 50%;
             background: radial-gradient(circle, var(--accent-color) 0%, rgba(250, 5, 74, 0) 70%);
-            opacity: 0.4;
-            filter: blur(60px);
+            opacity: 0.35;
+            filter: blur(70px);
             z-index: 1;
             pointer-events: none;
         }
+        body::before { top: -60px; right: -60px; }
+        body::after { bottom: -60px; left: -60px; }
 
-        body::before {
-            top: -50px;
-            right: -50px;
-        }
-
-        body::after {
-            bottom: -50px;
-            left: -50px;
-        }
-
-        /* СТИЛЬНАЯ НЕОНОВАЯ КАРТОЧКА */
-        .card {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            padding: 32px 24px;
-            border-radius: 24px;
-            box-shadow: 0 0 40px rgba(250, 5, 74, 0.05);
-            max-width: 330px;
+        /* Контейнер для страниц */
+        .page {
+            display: none; /* Переключаем через JS */
             width: 100%;
-            text-align: center;
+            max-width: 340px;
             z-index: 10;
             position: relative;
         }
 
+        .page.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.98); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* Карточки */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            padding: 32px 24px;
+            border-radius: 28px;
+            box-shadow: 0 0 40px rgba(250, 5, 74, 0.03);
+            text-align: center;
+            width: 100%;
+        }
+
         .icon {
             font-size: 54px;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
             display: inline-block;
-            filter: drop-shadow(0 0 10px rgba(250, 5, 74, 0.3));
+            filter: drop-shadow(0 0 15px rgba(250, 5, 74, 0.4));
+        }
+
+        .float-animation {
             animation: float 3s ease-in-out infinite;
         }
 
@@ -92,7 +104,7 @@
         }
 
         h2 {
-            font-family: 'Orbitron', sans-serif; /* Футуристичный шрифт для заголовка */
+            font-family: 'Orbitron', sans-serif;
             font-weight: 800;
             font-size: 26px;
             letter-spacing: 1px;
@@ -105,14 +117,13 @@
 
         p {
             font-size: 14px;
-            opacity: 0.65;
+            opacity: 0.6;
             line-height: 1.5;
-            margin-bottom: 30px;
-            font-weight: 400;
+            margin-bottom: 28px;
         }
 
-        /* КНОПКА С НЕОНОВЫМ СВЕЧЕНИЕМ */
-        .btn {
+        /* Стандартная кнопка (Страница 1) */
+        .btn-next {
             display: block;
             background-color: var(--accent-color);
             color: #ffffff;
@@ -123,25 +134,158 @@
             font-weight: 700;
             cursor: pointer;
             width: 100%;
-            text-decoration: none;
-            box-shadow: 0 4px 20px rgba(250, 5, 74, 0.4);
+            box-shadow: 0 4px 25px rgba(250, 5, 74, 0.35);
             transition: all 0.2s ease;
         }
+        .btn-next:active { transform: scale(0.97); }
 
-        .btn:active {
-            transform: scale(0.97);
-            box-shadow: 0 2px 10px rgba(250, 5, 74, 0.2);
+        /* ОГРОМНАЯ КРУГЛАЯ НЕОНОВАЯ КНОПКА (Страница 2) */
+        .pulse-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 40px 0;
+        }
+
+/* КНОПКА ПИТАНИЯ В НАШЕМ ФИРМЕННОМ ЦВЕТЕ */
+        .btn-connect {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            /* Градиент в тон сайта: от сочного розового к более темному рубиновому */
+            background: linear-gradient(135deg, rgba(250, 5, 74, 0.6) 0%, rgba(130, 2, 36, 0.5) 100%);
+            /* Полупрозрачная рамка в цвет акцента */
+            border: 1px solid rgba(250, 5, 74, 0.3);
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* Мощное розовое неоновое свечение */
+            box-shadow: 0 0 40px rgba(250, 5, 74, 0.35), inset 0 0 15px rgba(255, 255, 255, 0.1);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            outline: none;
+            position: relative;
+        }
+
+        /* Эффект при нажатии */
+        .btn-connect:active {
+            transform: scale(0.94);
+            box-shadow: 0 0 60px rgba(250, 5, 74, 0.6), inset 0 0 25px rgba(0, 0, 0, 0.4);
+            background: linear-gradient(135deg, rgba(250, 5, 74, 0.8) 0%, rgba(130, 2, 36, 0.7) 100%);
+        }
+
+        /* Белая иконка включения с легким розовым отсветом */
+        .btn-connect svg {
+            width: 42px;
+            height: 42px;
+            stroke: #ffffff;
+            stroke-width: 2.5;
+            stroke-linecap: round;
+            filter: drop-shadow(0 0 8px rgba(250, 5, 74, 0.6));
+        }
+
+        /* СТИЛЬНЫЙ ВЫПАДАЮЩИЙ СПИСОК (СЕЛЕКТОР ПРОКСИ) */
+        .select-wrapper {
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .select-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.4;
+            margin-bottom: 6px;
+            display: block;
+            padding-left: 4px;
+        }
+
+        .proxy-select {
+            width: 100%;
+            background: var(--input-bg);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: #ffffff;
+            padding: 14px 16px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            outline: none;
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23fa054a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            background-size: 16px;
+            transition: border 0.2s ease;
+        }
+
+        .proxy-select:focus {
+            border-color: var(--accent-color);
+        }
+
+        .proxy-select option {
+            background-color: #111111;
+            color: #ffffff;
+        }
+
+        /* Кнопка назад сверху страницы */
+        .btn-back {
+            background: none;
+            border: none;
+            color: var(--accent-color);
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin-bottom: 20px;
+            opacity: 0.8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
     </style>
 </head>
 <body>
 
-    <div class="card">
-        <div class="icon">🐙</div>
-        <h2>OctoProxy</h2>
-        <p>Нажми на кнопку ниже, чтобы мгновенно подключить бесплатный MTProto прокси к твоему аккаунту.</p>
+    <div id="pageMain" class="page active">
+        <div class="card">
+            <div class="icon float-animation">🐙</div>
+            <h2>OctoProxy</h2>
+            <p>Добро пожаловать в конфигуратор сети. Перейдите к панели управления для настройки защищенного соединения.</p>
+            <button class="btn-next" onclick="navigateTo('pageConnect')">Открыть панель</button>
+        </div>
+    </div>
+
+    <div id="pageConnect" class="page">
+        <button class="btn-back" onclick="navigateTo('pageMain')">← Назад</button>
         
-        <button class="btn" id="connectBtn">Подключить прокси</button>
+        <div class="card">
+            <div class="icon">🛡️</div>
+            <h2>Control Panel</h2>
+            <p>Выбери локацию из списка ниже и нажми центральную кнопку для активации.</p>
+            
+<!-- ОГРОМНАЯ КРУГЛАЯ КНОПКА ВКЛЮЧЕНИЯ -->
+            <div class="pulse-container">
+                <button class="btn-connect" id="connectBtn">
+                    <!-- Иконка Power (Включения) -->
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2V12" />
+                        <path d="M18.36 6.64001C19.3821 7.66299 20.0763 8.99599 20.3541 10.4688C20.6319 11.9417 20.4811 13.4617 19.9213 14.8344C19.3614 16.2071 18.4231 17.3616 17.228 18.1511C16.033 18.9406 14.6433 19.3245 13.2371 19.2539C11.8308 19.1833 10.4782 18.6617 9.35368 17.7554C8.22912 16.8492 7.38712 15.6015 6.93512 14.1714C6.48312 12.7413 6.44431 11.2014 6.82361 9.749C7.2029 8.29661 7.9813 6.99965 9.06 6.02001" />
+                    </svg>
+                </button>
+            </div>
+
+            <div class="select-wrapper">
+                <span class="select-label">Выберите сервер прокси:</span>
+                <select id="proxySelect" class="proxy-select">
+                    <option value="proxy1">🚀 Сервер #1 (Основной)</option>
+                    <option value="proxy2">⚡ Сервер #2 (Резервный)</option>
+                    <option value="proxy3">💎 Сервер #3 (Премиум)</option>
+                </select>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -149,18 +293,48 @@
         const tg = window.Telegram.WebApp;
         tg.ready();
         tg.expand();
-
-        // Настройка цветов системных элементов Telegram под наш дизайн
         tg.setHeaderColor('#000000');
         tg.setBackgroundColor('#000000');
 
-        // ТВОИ ДАННЫЕ ПРОКСИ
-        const PROXY_SERVER = "166.0.124.115";
-        const PROXY_PORT = "4515";
-        const PROXY_SECRET = "eee9a4f23b1d768c04a8d7f39120ca5b6e6d656469612e737465616d706f77657265642e636f6d";
+        // Функция переключения страниц
+        function navigateTo(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+        }
 
+        // БАЗА ДАННЫХ ТВОИХ ПРОКСИ (В будущем просто меняй значения здесь)
+        const PROXY_LIST = {
+            proxy1: {
+                server: "166.0.124.115",
+                port: "4515",
+                secret: "eee9a4f23b1d768c04a8d7f39120ca5b6e6d656469612e737465616d706f77657265642e636f6d"
+            },
+            proxy2: {
+                server: "твой_сервер_2",
+                port: "твой_порт_2",
+                secret: "твой_секрет_2"
+            },
+            proxy3: {
+                server: "твой_сервер_3",
+                port: "твой_порт_3",
+                secret: "твой_секрет_3"
+            }
+        };
+
+        // Обработчик нажатия на огромную круглую кнопку
         document.getElementById('connectBtn').addEventListener('click', () => {
-            const proxyUrl = `https://t.me/proxy?server=${PROXY_SERVER}&port=${PROXY_PORT}&secret=${PROXY_SECRET}`;
+            // Узнаем, какой прокси выбран в выпадающем списке
+            const selectedProxyKey = document.getElementById('proxySelect').value;
+            const proxyData = PROXY_LIST[selectedProxyKey];
+
+            // Проверяем заполненность данных
+            if (proxyData.server.includes("твой_сервер")) {
+                alert("Пожалуйста, сначала укажите реальные данные прокси в коде скрипта!");
+                return;
+            }
+
+            // Формируем ссылку и вызываем Telegram
+            const proxyUrl = `https://t.me/proxy?server=${proxyData.server}&port=${proxyData.port}&secret=${proxyData.secret}`;
             tg.openTelegramLink(proxyUrl);
         });
     </script>
