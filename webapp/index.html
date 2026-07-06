@@ -4,74 +4,133 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OctoProxy</title>
-    <!-- Подключаем официальный SDK Телеграма -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;800&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    
     <style>
         :root {
-            --tg-theme-bg-color: #17212b;
-            --tg-theme-text-color: #f5f5f5;
-            --tg-theme-button-color: #2481cc;
-            --tg-theme-button-text-color: #ffffff;
+            --bg-color: #000000;
+            --accent-color: #fa054a;
+            --text-color: #ffffff;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --card-border: rgba(250, 5, 74, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--tg-theme-bg-color);
-            color: var(--tg-theme-text-color);
-            margin: 0;
-            padding: 20px;
+            font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-height: 80vh;
-            text-align: center;
+            padding: 20px;
+            overflow: hidden;
+            position: relative;
         }
 
+        /* ТЕ САМЫЕ СВЕТЯЩИЕСЯ РАЗМЫТЫЕ ФИГУРЫ НА ФОНЕ */
+        body::before, body::after {
+            content: "";
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--accent-color) 0%, rgba(250, 5, 74, 0) 70%);
+            opacity: 0.4;
+            filter: blur(60px);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        body::before {
+            top: -50px;
+            right: -50px;
+        }
+
+        body::after {
+            bottom: -50px;
+            left: -50px;
+        }
+
+        /* СТИЛЬНАЯ НЕОНОВАЯ КАРТОЧКА */
         .card {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 24px;
-            border-radius: 16px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
-            max-width: 300px;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 32px 24px;
+            border-radius: 24px;
+            box-shadow: 0 0 40px rgba(250, 5, 74, 0.05);
+            max-width: 330px;
             width: 100%;
+            text-align: center;
+            z-index: 10;
+            position: relative;
         }
 
         .icon {
-            font-size: 48px;
-            margin-bottom: 16px;
+            font-size: 54px;
+            margin-bottom: 20px;
+            display: inline-block;
+            filter: drop-shadow(0 0 10px rgba(250, 5, 74, 0.3));
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
         }
 
         h2 {
-            margin: 0 0 8px 0;
-            font-size: 22px;
+            font-family: 'Orbitron', sans-serif; /* Футуристичный шрифт для заголовка */
+            font-weight: 800;
+            font-size: 26px;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            background: linear-gradient(135deg, #ffffff 0%, #a0a0a0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         p {
             font-size: 14px;
-            opacity: 0.7;
-            margin: 0 0 24px 0;
-            line-height: 1.4;
+            opacity: 0.65;
+            line-height: 1.5;
+            margin-bottom: 30px;
+            font-weight: 400;
         }
 
+        /* КНОПКА С НЕОНОВЫМ СВЕЧЕНИЕМ */
         .btn {
             display: block;
-            background-color: var(--tg-theme-button-color);
-            color: var(--tg-theme-button-text-color);
+            background-color: var(--accent-color);
+            color: #ffffff;
             border: none;
-            padding: 12px 20px;
-            border-radius: 10px;
+            padding: 16px 24px;
+            border-radius: 14px;
             font-size: 16px;
-            font-weight: bold;
+            font-weight: 700;
             cursor: pointer;
             width: 100%;
-            box-sizing: border-box;
             text-decoration: none;
-            transition: transform 0.1s ease;
+            box-shadow: 0 4px 20px rgba(250, 5, 74, 0.4);
+            transition: all 0.2s ease;
         }
 
         .btn:active {
-            transform: scale(0.98);
+            transform: scale(0.97);
+            box-shadow: 0 2px 10px rgba(250, 5, 74, 0.2);
         }
     </style>
 </head>
@@ -79,29 +138,29 @@
 
     <div class="card">
         <div class="icon">🐙</div>
-        <h2>OctoProxy v1.0</h2>
-        <p>Нажми на кнопку ниже, чтобы автоматически применить настройки прокси к твоему Telegram-аккаунту.</p>
+        <h2>OctoProxy</h2>
+        <p>Нажми на кнопку ниже, чтобы мгновенно подключить приватный MTProto прокси к твоему аккаунту.</p>
         
-        <!-- КНОПКА ПОДКЛЮЧЕНИЯ -->
         <button class="btn" id="connectBtn">Подключить прокси</button>
     </div>
 
     <script>
         // Инициализируем Telegram Web App
         const tg = window.Telegram.WebApp;
-        tg.ready(); // Сообщаем ТГ, что аппка загрузилась
-        tg.expand(); // Раскрываем приложение на максимум
+        tg.ready();
+        tg.expand();
 
-        // ТВОИ ДАННЫЕ ПРОКСИ (Впиши свои вместо заглушек)
-        const PROXY_SERVER = "166.0.124.115";
-        const PROXY_PORT = "4515";
-        const PROXY_SECRET = "eee9a4f23b1d768c04a8d7f39120ca5b6e6d656469612e737465616d706f77657265642e636f6d";
+        // Настройка цветов системных элементов Telegram под наш дизайн
+        tg.setHeaderColor('#000000');
+        tg.setBackgroundColor('#000000');
+
+        // ТВОИ ДАННЫЕ ПРОКСИ
+        const PROXY_SERVER = "твой_сервер_сюда";
+        const PROXY_PORT = "твой_порт_сюда";
+        const PROXY_SECRET = "твой_секрет_сюда";
 
         document.getElementById('connectBtn').addEventListener('click', () => {
-            // Формируем нативную ссылку для Телеграма
             const proxyUrl = `https://t.me/proxy?server=${PROXY_SERVER}&port=${PROXY_PORT}&secret=${PROXY_SECRET}`;
-            
-            // Используем метод SDK, который безопасно открывает ссылки внутри ТГ
             tg.openTelegramLink(proxyUrl);
         });
     </script>
