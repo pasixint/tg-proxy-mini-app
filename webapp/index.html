@@ -192,7 +192,7 @@
             height: 46px;
             fill: none;
             stroke: #ffffff;
-            stroke-width: 3.5;
+            stroke-width: 2.5;
             stroke-linecap: round;
             stroke-linejoin: round;
             filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.2));
@@ -324,8 +324,10 @@
                     <span class="select-label" id="labelProxy">Выберите сервер прокси:</span>
                 </div>
                 <select id="proxySelect" class="custom-select">
-                    <option value="proxy1" id="optProxy1">🚀 Сервер #1 (Основной)</option>
-                    <option value="proxy2" id="optProxy2">⚡ Сервер #2 (Резервный)</option>
+                    <option value="proxy1" id="optProxy1">🇮🇷 Сервер #1 (Iran)</option>
+                    <option value="proxy2" id="optProxy2">🇬🇧 Сервер #2 (UK)</option>
+                    <option value="proxy3" id="optProxy3">🇦🇪 Сервер #3 (UAE)</option>
+                    <option value="proxy4" id="optProxy4">🇩🇪 Сервер #4 (Germany)</option>
                 </select>
             </div>
         </div>
@@ -353,8 +355,10 @@
                 connectDescSub: "Для активации прокси, пожалуйста, подпишитесь на наш канал, нажав на центральную кнопку.",
                 connectDescReady: "Вы успешно выполнили условия! Выберите локацию и нажмите кнопку для активации.",
                 labelProxy: "Выберите сервер прокси:",
-                optProxy1: "🚀 Сервер #1 (Основной)",
-                optProxy2: "⚡ Сервер #2 (Резервный)",
+                optProxy1: "🇮🇷 Сервер #1 (Iran)",
+                optProxy2: "🇬🇧 Сервер #2 (UK)",
+                optProxy3: "🇦🇪 Сервер #3 (UAE)",
+                optProxy4: "🇩🇪 Сервер #4 (Germany)",
                 labelLang: "Язык / Language / Idioma:",
                 alertSetup: "Пожалуйста, сначала укажите реальные данные прокси в коде скрипта!"
             },
@@ -365,8 +369,10 @@
                 connectDescSub: "To activate the proxy, please subscribe to our channel by pressing the central button.",
                 connectDescReady: "Conditions met successfully! Select a location and press the button to activate.",
                 labelProxy: "Select proxy server:",
-                optProxy1: "🚀 Server #1 (Primary)",
-                optProxy2: "⚡ Server #2 (Backup)",
+                optProxy1: "🇮🇷 Server #1 (Iran)",
+                optProxy2: "🇬🇧 Server #2 (UK)",
+                optProxy3: "🇦🇪 Server #3 (UAE)",
+                optProxy4: "🇩🇪 Server #4 (Germany)",
                 labelLang: "Language:",
                 alertSetup: "Please specify real proxy data in the script code first!"
             },
@@ -377,15 +383,16 @@
                 connectDescSub: "Para activar el proxy, suscríbase a nuestro canal presionando el botón central.",
                 connectDescReady: "¡Condiciones cumplidas con éxito! Seleccione una ubicación y presione el botón para activar.",
                 labelProxy: "Seleccionar servidor proxy:",
-                optProxy1: "🚀 Servidor #1 (Principal)",
-                optProxy2: "⚡ Servidor #2 (Respaldo)",
+                optProxy1: "🇮🇷 Servidor #1 (Irán)",
+                optProxy2: "🇬🇧 Servidor #2 (Reino Unido)",
+                optProxy3: "🇦🇪 Servidor #3 (EAU)",
+                optProxy4: "🇩🇪 Servidor #4 (Alemania)",
                 labelLang: "Idioma:",
                 alertSetup: "¡Por favor, especifique los datos reales del proxy en el código primero!"
             }
         };
 
         // Обновление внешнего вида и логики кнопки на основе статуса подписки
-// Обновление внешнего вида и логики кнопки на основе статуса подписки
         function updateButtonUI() {
             const btn = document.getElementById('connectBtn');
             const icon = document.getElementById('connectIcon');
@@ -428,6 +435,8 @@
             document.getElementById('labelProxy').textContent = translations[lang].labelProxy;
             document.getElementById('optProxy1').textContent = translations[lang].optProxy1;
             document.getElementById('optProxy2').textContent = translations[lang].optProxy2;
+            document.getElementById('optProxy3').textContent = translations[lang].optProxy3;
+            document.getElementById('optProxy4').textContent = translations[lang].optProxy4;
             document.getElementById('labelLang').textContent = translations[lang].labelLang;
 
             updateButtonUI();
@@ -444,7 +453,9 @@
 
         const PROXY_LIST = {
             proxy1: { server: "166.0.124.115", port: "4515", secret: "eee9a4f23b1d768c04a8d7f39120ca5b6e6d656469612e737465616d706f77657265642e636f6d" },
-            proxy2: { server: "fast1.mtproxy.zip", port: "443", secret: "ee3f8a91c2d7e04b6a9f12c5e8370bd4aa786170692e6f7a6f6e2e7275" }
+            proxy2: { server: "fast1.mtproxy.zip", port: "443", secret: "ee3f8a91c2d7e04b6a9f12c5e8370bd4aa786170692e6f7a6f6e2e7275" },
+            proxy3: { server: "91.132.51.182", port: "8443", secret: "ddd9b78ace5d5017600637b358eb785204" },
+            proxy4: { server: "65.109.242.243", port: "8443", secret: "dd104462821249bd7ac519130220c25d09" }
         };
 
         // Логика клика по круглой кнопке
