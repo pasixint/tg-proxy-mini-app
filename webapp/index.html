@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OctoProxy</title>
-    <!-- Подключаем официальный SDK Телеграма -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <!-- Шрифты -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;800;900&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
@@ -128,7 +126,10 @@
 
         /* Кнопка Перейти (Страница 1) */
         .btn-next {
-            display: block;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
             background-color: var(--accent-color);
             color: #ffffff;
             border: none;
@@ -142,13 +143,14 @@
             transition: all 0.2s ease;
         }
         .btn-next:active { transform: scale(0.97); }
+        .btn-next svg { width: 18px; height: 18px; fill: #ffffff; }
 
         /* КРУГЛАЯ КНОПКА ВКЛЮЧЕНИЯ */
         .pulse-container {
             display: flex;
             justify-content: center;
             align-items: center;
-            margin: 35px 0 40px 0; /* Слегка увеличили отступы */
+            margin: 35px 0 35px 0;
         }
 
         .btn-connect {
@@ -173,19 +175,37 @@
             background: linear-gradient(135deg, rgba(250, 5, 74, 0.8) 0%, rgba(130, 2, 36, 0.7) 100%);
         }
 
+        /* ПОФИКСЕННЫЙ ЧЁТКИЙ ЗНАЧОК ВЫКЛЮЧАТЕЛЯ (Streamline Bold стиль) */
         .btn-connect svg {
-            width: 42px;
-            height: 42px;
+            width: 46px;
+            height: 46px;
+            fill: none;
             stroke: #ffffff;
-            stroke-width: 2.5;
+            stroke-width: 3.5; /* Сделали линию плотнее в стиле Bold */
             stroke-linecap: round;
-            filter: drop-shadow(0 0 8px rgba(250, 5, 74, 0.6));
+            stroke-linejoin: round;
+            filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.2));
         }
 
-        /* СЕЛЕКТОР ПРОКСИ */
+        /* КАСТОМНЫЕ СЕЛЕКТОРЫ С ИКОНКАМИ */
         .select-wrapper {
-            margin-top: 20px;
+            margin-top: 16px;
             text-align: left;
+        }
+
+        .select-header {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 6px;
+            padding-left: 4px;
+        }
+
+        .select-header svg {
+            width: 14px;
+            height: 14px;
+            fill: var(--accent-color);
+            opacity: 0.8;
         }
 
         .select-label {
@@ -193,12 +213,9 @@
             text-transform: uppercase;
             letter-spacing: 1px;
             opacity: 0.4;
-            margin-bottom: 6px;
-            display: block;
-            padding-left: 4px;
         }
 
-        .proxy-select {
+        .custom-select {
             width: 100%;
             background: var(--input-bg);
             border: 1px solid rgba(255, 255, 255, 0.08);
@@ -211,18 +228,18 @@
             cursor: pointer;
             appearance: none;
             -webkit-appearance: none;
-            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23fa054a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>");
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23fa054a' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>");
             background-repeat: no-repeat;
             background-position: right 14px center;
             background-size: 16px;
             transition: border 0.2s ease;
         }
 
-        .proxy-select:focus {
+        .custom-select:focus {
             border-color: var(--accent-color);
         }
 
-        .proxy-select option {
+        .custom-select option {
             background-color: #111111;
             color: #ffffff;
         }
@@ -237,55 +254,71 @@
             cursor: pointer;
             display: inline-flex;
             align-items: center;
-            gap: 4px;
+            gap: 6px;
             margin-bottom: 20px;
             opacity: 0.8;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            transition: opacity 0.2s ease;
         }
+        .btn-back:active { opacity: 0.5; }
+        .btn-back svg { width: 14px; height: 14px; fill: var(--accent-color); }
     </style>
 </head>
 <body>
 
-    <!-- СТРАНИЦА 1: ГЛАВНАЯ -->
     <div id="pageMain" class="page active">
         <div class="card">
-            <!-- Айфоновский 3D осьминог высокого разрешения -->
             <img src="https://em-content.zobj.net/source/apple/391/octopus_1f419.png" class="logo-img float-animation" alt="Octopus">
             <h2>OctoProxy</h2>
-            <p>Добро пожаловать в конфигуратор сети. Перейдите к панели управления для настройки защищенного соединения.</p>
-            <button class="btn-next" onclick="navigateTo('pageConnect')">Перейти</button>
+            <p id="mainDesc">Добро пожаловать в конфигуратор сети. Перейдите к панели управления для настройки защищенного соединения.</p>
+            <button class="btn-next" id="nextBtn" onclick="navigateTo('pageConnect')">
+                <span id="nextBtnText">Перейти</span>
+                <svg viewBox="0 0 24 24"><path d="M5 13h11.86l-5.43 5.43a1 1 0 0 0 1.42 1.42l7.14-7.14a1 1 0 0 0 0-1.42l-7.14-7.14a1 1 0 0 0-1.42 1.42L16.86 11H5a1 1 0 0 0 0 2z"/></svg>
+            </button>
         </div>
     </div>
 
-    <!-- СТРАНИЦА 2: ПОДКЛЮЧЕНИЕ -->
     <div id="pageConnect" class="page">
-        <button class="btn-back" onclick="navigateTo('pageMain')">← Назад</button>
+        <button class="btn-back" id="backBtn" onclick="navigateTo('pageMain')">
+            <svg viewBox="0 0 24 24"><path d="M19 11H7.14l5.43-5.43a1 1 0 0 0-1.42-1.42l-7.14 7.14a1 1 0 0 0 0 1.42l7.14 7.14a1 1 0 0 0 1.42-1.42L7.14 13H19a1 1 0 0 0 0-2z"/></svg>
+            <span id="backBtnText">Назад</span>
+        </button>
         
         <div class="card">
-            <!-- Тот же айфоновский осьминог для единства стиля вместо щита -->
             <img src="https://em-content.zobj.net/source/apple/391/octopus_1f419.png" class="logo-img" alt="Octopus">
-            <!-- Заменили CONTROL PANEL на название твоего приложения -->
             <h2>OctoProxy</h2>
-            <p>Выбери локацию из списка ниже и нажми центральную кнопку для активации.</p>
+            <p id="connectDesc">Выбери локацию из списка ниже и нажми центральную кнопку для активации.</p>
             
-            <!-- ОГРОМНАЯ КРУГЛАЯ КНОПКА ВКЛЮЧЕНИЯ -->
             <div class="pulse-container">
                 <button class="btn-connect" id="connectBtn">
-                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 2V12" />
-                        <path d="M18.36 6.64001C19.3821 7.66299 20.0763 8.99599 20.3541 10.4688C20.6319 11.9417 20.4811 13.4617 19.9213 14.8344C19.3614 16.2071 18.4231 17.3616 17.228 18.1511C16.033 18.9406 14.6433 19.3245 13.2371 19.2539C11.8308 19.1833 10.4782 18.6617 9.35368 17.7554C8.22912 16.8492 7.38712 15.6015 6.93512 14.1714C6.48312 12.7413 6.44431 11.2014 6.82361 9.749C7.2029 8.29661 7.9813 6.99965 9.06 6.02001" />
+                    <svg viewBox="0 0 24 24">
+                        <line x1="12" y1="3" x2="12" y2="11" />
+                        <path d="M18.4 6.5a9 9 0 1 1-12.8 0" />
                     </svg>
                 </button>
             </div>
 
-            <!-- СЕЛЕКТОР ПРОКСИ -->
             <div class="select-wrapper">
-                <span class="select-label">Выберите сервер прокси:</span>
-                <select id="proxySelect" class="proxy-select">
-                    <option value="proxy1">🚀 Сервер #1 (Основной)</option>
-                    <option value="proxy2">⚡ Сервер #2 (Резервный)</option>
-                    <option value="proxy3">💎 Сервер #3 (Премиум)</option>
+                <div class="select-header">
+                    <svg viewBox="0 0 24 24"><path d="M19 2H5a3 3 0 0 0-3 3v4a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3V5a3 3 0 0 0-3-3zm-1 6h-2a1 1 0 0 1 0-2h2a1 1 0 0 1 0 2zm1 6H5a3 3 0 0 0-3 3v4a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3v-4a3 3 0 0 0-3-3zm-1 6h-2a1 1 0 0 1 0-2h2a1 1 0 0 1 0 2z"/></svg>
+                    <span class="select-label" id="labelProxy">Выберите сервер прокси:</span>
+                </div>
+                <select id="proxySelect" class="custom-select">
+                    <option value="proxy1" id="optProxy1">🚀 Сервер #1 (Основной)</option>
+                    <option value="proxy2" id="optProxy2">⚡ Сервер #2 (Резервный)</option>
+                </select>
+            </div>
+
+            <div class="select-wrapper">
+                <div class="select-header">
+                    <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm7.92 9h-4.06a14.33 14.33 0 0 0-1.46-6.13A8 8 0 0 1 19.92 11zM12 4a12.4 12.4 0 0 1 2.14 7H9.86A12.4 12.4 0 0 1 12 4zM4.08 11a8 8 0 0 1 5.52-6.13A14.33 14.33 0 0 0 8.14 11zm-.08 2h4.06a14.33 14.33 0 0 0 1.46 6.13A8 8 0 0 1 4.08 13zm7.92 7a12.4 12.4 0 0 1-2.14-7h4.28A12.4 12.4 0 0 1 12 20zm7.92-7a8 8 0 0 1-5.52 6.13 14.33 14.33 0 0 0 1.46-6.13z"/></svg>
+                    <span class="select-label" id="labelLang">Язык / Language / Idioma:</span>
+                </div>
+                <select id="langSelect" class="custom-select" onchange="changeLanguage(this.value)">
+                    <option value="ru">🇷🇺 Русский</option>
+                    <option value="en">🇬🇧 English</option>
+                    <option value="es">🇪🇸 Español</option>
                 </select>
             </div>
         </div>
@@ -295,8 +328,65 @@
         const tg = window.Telegram.WebApp;
         tg.ready();
         tg.expand();
-        tg.setHeaderColor('#000000');
+        tg.setHeaderColor('rgba(250, 5, 74, 0.8)');
         tg.setBackgroundColor('#000000');
+
+        // Словарь переводов
+        const translations = {
+            ru: {
+                mainDesc: "Добро пожаловать в конфигуратор сети. Перейдите к панели управления для настройки защищенного соединения.",
+                nextBtnText: "Перейти",
+                backBtnText: "Назад",
+                connectDesc: "Выбери локацию из списка ниже и нажми центральную кнопку для активации.",
+                labelProxy: "Выберите сервер прокси:",
+                optProxy1: "🚀 Сервер #1 (Основной)",
+                optProxy2: "⚡ Сервер #2 (Резервный)",
+                labelLang: "Язык / Language / Idioma:",
+                alertSetup: "Пожалуйста, сначала укажите реальные данные прокси в коде скрипта!"
+            },
+            en: {
+                mainDesc: "Welcome to the network configurator. Go to the control panel to set up a secure connection.",
+                nextBtnText: "Continue",
+                backBtnText: "Back",
+                connectDesc: "Select a location from the list below and press the central button to activate.",
+                labelProxy: "Select proxy server:",
+                optProxy1: "🚀 Server #1 (Primary)",
+                optProxy2: "⚡ Server #2 (Backup)",
+                labelLang: "Language:",
+                alertSetup: "Please specify real proxy data in the script code first!"
+            },
+            es: {
+                mainDesc: "Bienvenido al configurador de red. Vaya al panel de control para configurar una conexión segura.",
+                nextBtnText: "Continuar",
+                backBtnText: "Atrás",
+                connectDesc: "Seleccione una ubicación de la lista a continuación y presione el botón central para activar.",
+                labelProxy: "Seleccionar servidor proxy:",
+                optProxy1: "🚀 Servidor #1 (Principal)",
+                optProxy2: "⚡ Servidor #2 (Respaldo)",
+                labelLang: "Idioma:",
+                alertSetup: "¡Por favor, especifique los datos reales del proxy en el código primero!"
+            }
+        };
+
+        // Функция смены языка
+        function changeLanguage(lang) {
+            localStorage.setItem('selectedLang', lang);
+            document.getElementById('langSelect').value = lang;
+
+            // Применяем тексты
+            document.getElementById('mainDesc').textContent = translations[lang].mainDesc;
+            document.getElementById('nextBtnText').textContent = translations[lang].nextBtnText;
+            document.getElementById('backBtnText').textContent = translations[lang].backBtnText;
+            document.getElementById('connectDesc').textContent = translations[lang].connectDesc;
+            document.getElementById('labelProxy').textContent = translations[lang].labelProxy;
+            document.getElementById('optProxy1').textContent = translations[lang].optProxy1;
+            document.getElementById('optProxy2').textContent = translations[lang].optProxy2;
+            document.getElementById('labelLang').textContent = translations[lang].labelLang;
+        }
+
+        // Инициализация языка (берём из сохраненных или по умолчанию русский)
+        const savedLang = localStorage.getItem('selectedLang') || 'ru';
+        changeLanguage(savedLang);
 
         function navigateTo(pageId) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -305,16 +395,16 @@
 
         const PROXY_LIST = {
             proxy1: { server: "166.0.124.115", port: "4515", secret: "eee9a4f23b1d768c04a8d7f39120ca5b6e6d656469612e737465616d706f77657265642e636f6d" },
-            proxy2: { server: "твой_сервер_2", port: "твой_порт_2", secret: "твой_секрет_2" },
-            proxy3: { server: "твой_сервер_3", port: "твой_порт_3", secret: "твой_секрет_3" }
+            proxy2: { server: "fast1.mtproxy.zip", port: "443", secret: "ee3f8a91c2d7e04b6a9f12c5e8370bd4aa786170692e6f7a6f6e2e7275" }
         };
 
         document.getElementById('connectBtn').addEventListener('click', () => {
             const selectedProxyKey = document.getElementById('proxySelect').value;
             const proxyData = PROXY_LIST[selectedProxyKey];
+            const currentLang = document.getElementById('langSelect').value;
 
             if (proxyData.server.includes("твой_сервер")) {
-                alert("Пожалуйста, сначала укажите реальные данные прокси в коде скрипта!");
+                alert(translations[currentLang].alertSetup);
                 return;
             }
 
