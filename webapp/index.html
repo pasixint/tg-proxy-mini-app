@@ -175,13 +175,24 @@
             background: linear-gradient(135deg, rgba(250, 5, 74, 0.8) 0%, rgba(130, 2, 36, 0.7) 100%);
         }
 
-        /* ПОФИКСЕННЫЙ ЧЁТКИЙ ЗНАЧОК ВЫКЛЮЧАТЕЛЯ (Streamline Bold стиль) */
+        /* СТИЛЬ КНОПКИ ПРИ ТРЕБОВАНИИ ПОДПИСКИ (Цвет Telegram) */
+        .btn-connect.sub-required {
+            background: linear-gradient(135deg, rgba(36, 129, 204, 0.7) 0%, rgba(16, 73, 117, 0.6) 100%);
+            border: 1px solid rgba(36, 129, 204, 0.4);
+            box-shadow: 0 0 40px rgba(36, 129, 204, 0.3), inset 0 0 15px rgba(255, 255, 255, 0.1);
+        }
+        .btn-connect.sub-required:active {
+            background: linear-gradient(135deg, rgba(36, 129, 204, 0.9) 0%, rgba(16, 73, 117, 0.8) 100%);
+            box-shadow: 0 0 60px rgba(36, 129, 204, 0.5);
+        }
+
+        /* ЗНАЧОК ВЫКЛЮЧАТЕЛЯ */
         .btn-connect svg {
             width: 46px;
             height: 46px;
             fill: none;
             stroke: #ffffff;
-            stroke-width: 3.5; /* Сделали линию плотнее в стиле Bold */
+            stroke-width: 3.5;
             stroke-linecap: round;
             stroke-linejoin: round;
             filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.2));
@@ -276,6 +287,17 @@
                 <span id="nextBtnText">Перейти</span>
                 <svg viewBox="0 0 24 24"><path d="M5 13h11.86l-5.43 5.43a1 1 0 0 0 1.42 1.42l7.14-7.14a1 1 0 0 0 0-1.42l-7.14-7.14a1 1 0 0 0-1.42 1.42L16.86 11H5a1 1 0 0 0 0 2z"/></svg>
             </button>
+            <div class="select-wrapper">
+                <div class="select-header">
+                    <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm7.92 9h-4.06a14.33 14.33 0 0 0-1.46-6.13A8 8 0 0 1 19.92 11zM12 4a12.4 12.4 0 0 1 2.14 7H9.86A12.4 12.4 0 0 1 12 4zM4.08 11a8 8 0 0 1 5.52-6.13A14.33 14.33 0 0 0 8.14 11zm-.08 2h4.06a14.33 14.33 0 0 0 1.46 6.13A8 8 0 0 1 4.08 13zm7.92 7a12.4 12.4 0 0 1-2.14-7h4.28A12.4 12.4 0 0 1 12 20zm7.92-7a8 8 0 0 1-5.52 6.13 14.33 14.33 0 0 0 1.46-6.13z"/></svg>
+                    <span class="select-label" id="labelLang">Язык / Language / Idioma:</span>
+                </div>
+                <select id="langSelect" class="custom-select" onchange="changeLanguage(this.value)">
+                    <option value="ru">🇷🇺 Русский</option>
+                    <option value="en">🇬🇧 English</option>
+                    <option value="es">🇪🇸 Español</option>
+                </select>
+            </div>
         </div>
     </div>
 
@@ -292,10 +314,7 @@
             
             <div class="pulse-container">
                 <button class="btn-connect" id="connectBtn">
-                    <svg viewBox="0 0 24 24">
-                        <line x1="12" y1="3" x2="12" y2="11" />
-                        <path d="M18.4 6.5a9 9 0 1 1-12.8 0" />
-                    </svg>
+                    <svg id="connectIcon" viewBox="0 0 24 24"></svg>
                 </button>
             </div>
 
@@ -309,18 +328,6 @@
                     <option value="proxy2" id="optProxy2">⚡ Сервер #2 (Резервный)</option>
                 </select>
             </div>
-
-            <div class="select-wrapper">
-                <div class="select-header">
-                    <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm7.92 9h-4.06a14.33 14.33 0 0 0-1.46-6.13A8 8 0 0 1 19.92 11zM12 4a12.4 12.4 0 0 1 2.14 7H9.86A12.4 12.4 0 0 1 12 4zM4.08 11a8 8 0 0 1 5.52-6.13A14.33 14.33 0 0 0 8.14 11zm-.08 2h4.06a14.33 14.33 0 0 0 1.46 6.13A8 8 0 0 1 4.08 13zm7.92 7a12.4 12.4 0 0 1-2.14-7h4.28A12.4 12.4 0 0 1 12 20zm7.92-7a8 8 0 0 1-5.52 6.13 14.33 14.33 0 0 0 1.46-6.13z"/></svg>
-                    <span class="select-label" id="labelLang">Язык / Language / Idioma:</span>
-                </div>
-                <select id="langSelect" class="custom-select" onchange="changeLanguage(this.value)">
-                    <option value="ru">🇷🇺 Русский</option>
-                    <option value="en">🇬🇧 English</option>
-                    <option value="es">🇪🇸 Español</option>
-                </select>
-            </div>
         </div>
     </div>
 
@@ -331,13 +338,20 @@
         tg.setHeaderColor('rgba(250, 5, 74, 0.8)');
         tg.setBackgroundColor('#000000');
 
+        // Tg link
+        const CHANNEL_LINK = "https://t.me/OctoProxyTG";
+
+        // Проверяем статус подписки из локальной памяти
+        let isSubscribed = localStorage.getItem('isSubscribed') === 'true';
+
         // Словарь переводов
         const translations = {
             ru: {
                 mainDesc: "Добро пожаловать в конфигуратор сети. Перейдите к панели управления для настройки защищенного соединения.",
                 nextBtnText: "Перейти",
                 backBtnText: "Назад",
-                connectDesc: "Выбери локацию из списка ниже и нажми центральную кнопку для активации.",
+                connectDescSub: "Для активации прокси, пожалуйста, подпишитесь на наш канал, нажав на центральную кнопку.",
+                connectDescReady: "Вы успешно выполнили условия! Выберите локацию и нажмите кнопку для активации.",
                 labelProxy: "Выберите сервер прокси:",
                 optProxy1: "🚀 Сервер #1 (Основной)",
                 optProxy2: "⚡ Сервер #2 (Резервный)",
@@ -348,7 +362,8 @@
                 mainDesc: "Welcome to the network configurator. Go to the control panel to set up a secure connection.",
                 nextBtnText: "Continue",
                 backBtnText: "Back",
-                connectDesc: "Select a location from the list below and press the central button to activate.",
+                connectDescSub: "To activate the proxy, please subscribe to our channel by pressing the central button.",
+                connectDescReady: "Conditions met successfully! Select a location and press the button to activate.",
                 labelProxy: "Select proxy server:",
                 optProxy1: "🚀 Server #1 (Primary)",
                 optProxy2: "⚡ Server #2 (Backup)",
@@ -359,7 +374,8 @@
                 mainDesc: "Bienvenido al configurador de red. Vaya al panel de control para configurar una conexión segura.",
                 nextBtnText: "Continuar",
                 backBtnText: "Atrás",
-                connectDesc: "Seleccione una ubicación de la lista a continuación y presione el botón central para activar.",
+                connectDescSub: "Para activar el proxy, suscríbase a nuestro canal presionando el botón central.",
+                connectDescReady: "¡Condiciones cumplidas con éxito! Seleccione una ubicación y presione el botón para activar.",
                 labelProxy: "Seleccionar servidor proxy:",
                 optProxy1: "🚀 Servidor #1 (Principal)",
                 optProxy2: "⚡ Servidor #2 (Respaldo)",
@@ -367,6 +383,33 @@
                 alertSetup: "¡Por favor, especifique los datos reales del proxy en el código primero!"
             }
         };
+
+        // Обновление внешнего вида и логики кнопки на основе статуса подписки
+        function updateButtonUI() {
+            const btn = document.getElementById('connectBtn');
+            const icon = document.getElementById('connectIcon');
+            const currentLang = document.getElementById('langSelect').value;
+
+            if (!isSubscribed) {
+                // Если подписки нет — красим в цвет Telegram, просим подписаться
+                btn.classList.add('sub-required');
+                document.getElementById('connectDesc').textContent = translations[currentLang].connectDescSub;
+                // Иконка человечка с плюсом (+) в стиле Streamline Bold
+                icon.innerHTML = `
+                    <path d="M19 11h-2V9a1 1 0 0 0-2 0v2h-2a1 1 0 0 0 0 2h2v2a1 1 0 0 0 2 0v-2h2a1 1 0 0 0 0-2z" fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round"/>
+                    <path d="M9 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4zm0-6a2 2 0 1 1-2 2 2 2 0 0 1 2-2zm0 8a7 7 0 0 0-7 7 1 1 0 0 0 1 1h12a1 1 0 0 0 1-1 7 7 0 0 0-7-7zm-4.9 6a5 5 0 0 1 9.8 0z" fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+                `;
+            } else {
+                // Если подписан — красим в розовый акцент, иконка питания активна
+                btn.classList.remove('sub-required');
+                document.getElementById('connectDesc').textContent = translations[currentLang].connectDescReady;
+                // Твой фиксированный чёткий выключатель
+                icon.innerHTML = `
+                    <line x1="12" y1="3" x2="12" y2="11" />
+                    <path d="M18.4 6.5a9 9 0 1 1-12.8 0" />
+                `;
+            }
+        }
 
         // Функция смены языка
         function changeLanguage(lang) {
@@ -377,11 +420,12 @@
             document.getElementById('mainDesc').textContent = translations[lang].mainDesc;
             document.getElementById('nextBtnText').textContent = translations[lang].nextBtnText;
             document.getElementById('backBtnText').textContent = translations[lang].backBtnText;
-            document.getElementById('connectDesc').textContent = translations[lang].connectDesc;
             document.getElementById('labelProxy').textContent = translations[lang].labelProxy;
             document.getElementById('optProxy1').textContent = translations[lang].optProxy1;
             document.getElementById('optProxy2').textContent = translations[lang].optProxy2;
             document.getElementById('labelLang').textContent = translations[lang].labelLang;
+
+            updateButtonUI();
         }
 
         // Инициализация языка (берём из сохраненных или по умолчанию русский)
@@ -398,10 +442,22 @@
             proxy2: { server: "fast1.mtproxy.zip", port: "443", secret: "ee3f8a91c2d7e04b6a9f12c5e8370bd4aa786170692e6f7a6f6e2e7275" }
         };
 
+        // Логика клика по круглой кнопке
         document.getElementById('connectBtn').addEventListener('click', () => {
+            const currentLang = document.getElementById('langSelect').value;
+
+            // ШАГ 1: Если подписки нет — перенаправляем на канал и активируем "готовность"
+            if (!isSubscribed) {
+                tg.openTelegramLink(CHANNEL_LINK);
+                isSubscribed = true;
+                localStorage.setItem('isSubscribed', 'true');
+                updateButtonUI();
+                return;
+            }
+
+            // ШАГ 2: Если подписка пройдена — запускаем прокси
             const selectedProxyKey = document.getElementById('proxySelect').value;
             const proxyData = PROXY_LIST[selectedProxyKey];
-            const currentLang = document.getElementById('langSelect').value;
 
             if (proxyData.server.includes("твой_сервер")) {
                 alert(translations[currentLang].alertSetup);
