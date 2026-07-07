@@ -385,6 +385,7 @@
         };
 
         // Обновление внешнего вида и логики кнопки на основе статуса подписки
+// Обновление внешнего вида и логики кнопки на основе статуса подписки
         function updateButtonUI() {
             const btn = document.getElementById('connectBtn');
             const icon = document.getElementById('connectIcon');
@@ -394,15 +395,19 @@
                 // Если подписки нет — красим в цвет Telegram, просим подписаться
                 btn.classList.add('sub-required');
                 document.getElementById('connectDesc').textContent = translations[currentLang].connectDescSub;
-                // Иконка человечка с плюсом (+) в стиле Streamline Bold
+                
+                // ПОФИКСЕННАЯ АКТУАЛЬНАЯ ИКОНКА ПОДПИСКИ (Линейный аккуратный стиль)
                 icon.innerHTML = `
-                    <path d="M19 11h-2V9a1 1 0 0 0-2 0v2h-2a1 1 0 0 0 0 2h2v2a1 1 0 0 0 2 0v-2h2a1 1 0 0 0 0-2z" fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round"/>
-                    <path d="M9 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4zm0-6a2 2 0 1 1-2 2 2 2 0 0 1 2-2zm0 8a7 7 0 0 0-7 7 1 1 0 0 0 1 1h12a1 1 0 0 0 1-1 7 7 0 0 0-7-7zm-4.9 6a5 5 0 0 1 9.8 0z" fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <circle cx="10" cy="7" r="4" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+                    <path d="M3 21v-2a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4v2" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+                    <line x1="19" y1="8" x2="19" y2="14" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+                    <line x1="16" y1="11" x2="22" y2="11" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
                 `;
             } else {
                 // Если подписан — красим в розовый акцент, иконка питания активна
                 btn.classList.remove('sub-required');
                 document.getElementById('connectDesc').textContent = translations[currentLang].connectDescReady;
+                
                 // Твой фиксированный чёткий выключатель
                 icon.innerHTML = `
                     <line x1="12" y1="3" x2="12" y2="11" />
